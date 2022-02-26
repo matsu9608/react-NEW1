@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import "./styles.css";
+import { InputTodo } from "./components/inputTodo";
+import { InCompleteTodo } from "./components/inCompleteTodo";
+import { CompleteTodo } from "./components/completeTodo";
 
 export default function App() {
   //stateを実装
-  const [todoText, setTodoText] = useState("333");
+  const [todoText, setTodoText] = useState("");
   //未完了
-
   const [incompleteTodos, seiIncompleteTodos] = useState([
     "ああああ",
     "いいいい"
@@ -57,41 +59,21 @@ export default function App() {
   // const seiIncompleteTodos　＝　　（）
   return (
     <>
-      <div className="input-area">
-        <input
-          placeholder="Todoを入力"
-          value={todoText}
-          onChange={onchageTodoText}
-        />
-        <button onClick={onClickAdd}>追加</button>
-      </div>
-      <div className="incomplete-area">
-        <p className="title">未完了のTodo</p>
-        <ul>
-          {incompleteTodos.map((todo, index) => {
-            return (
-              <div key={todo} className="list-row">
-                <li>{todo}</li>
-                <button onClick={() => onClickComplete(index)}>完了</button>
-                <button onClick={() => onClickDelete(index)}>削除</button>
-              </div>
-            );
-          })}
-        </ul>
-      </div>
-      <div className="complete-area">
-        <p className="title">完了のTodo</p>
-        <ul>
-          {completeTodos.map((completetask, index) => {
-            return (
-              <div key={completetask} className="list-row">
-                <li>{completetask}</li>
-                <button onClick={() => onClickReturn(index)}>戻す</button>
-              </div>
-            );
-          })}
-        </ul>
-      </div>
+      <InputTodo
+        todoText={todoText}
+        onChange={onchageTodoText}
+        onClick={onClickAdd}
+      />
+
+      <InCompleteTodo
+        incompleteTodos={incompleteTodos}
+        onClickComplete={onClickComplete}
+        onClickDelete={onClickDelete}
+      />
+      <CompleteTodo
+        completetask={completeTodos}
+        onClickReturn={onClickReturn}
+      />
       <div></div>
     </>
   );
