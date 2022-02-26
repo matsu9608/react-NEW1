@@ -1,46 +1,98 @@
-import React, { useState, useEffect } from "react";
-import { ColorfulMessage } from "./components/ColorfulMessage";
+import React, { useState } from "react";
+import "./styles.css";
 
-//コンポーネント
-const App = () => {
-  //state一覧
-  const [num, setNum] = useState(0);
-  const [faceShowFlag, setFaceShowFlag] = useState(true);
+export default function App() {
+  //stateを実装
+  const [todoText, setTodoText] = useState("333");
+  //未完了
 
-  //カウント処理
-  const onClickCountButton = () => {
-    setNum(num + 1);
-    console.log(num);
+  const [incompleteTodos, seiIncompleteTodos] = useState([
+    "ああああ",
+    "いいいい"
+  ]);
+  const [completeTodos, setCompleteTodos] = useState(["うううう"]);
+
+  //入力文字の反映
+  const onchageTodoText = (event) => {
+    setTodoText(event.target.value);
   };
 
-  const onClickfaceShowFlag = () => {
-    setFaceShowFlag(!faceShowFlag);
-  };
-
-  useEffect(() => {
-    if (num > 0) {
-      if (num % 3 === 0) {
-        faceShowFlag || setFaceShowFlag(true);
-      } else {
-        faceShowFlag && setFaceShowFlag(false);
-      }
+  //クリックイベント
+  const onClickAdd = () => {
+    if (todoText !== "") {
+      const newTodos = [...incompleteTodos, todoText];
+      seiIncompleteTodos(newTodos);
+      setTodoText("");
+    } else {
+      return;
     }
-    //eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [num]);
+  };
+  //削除
+  const onClickDelete = (index) => {
+    const newTodos = [...incompleteTodos];
+    newTodos.splice(index, 1);
+    seiIncompleteTodos(newTodos);
+  };
 
+  //完了
+  const onClickComplete = (index) => {
+    const newIncompleteTodos = [...incompleteTodos];
+    newIncompleteTodos.splice(index, 1);
+
+    const newCompleteTodos = [...completeTodos, incompleteTodos[index]];
+    setCompleteTodos(newCompleteTodos);
+    seiIncompleteTodos(newIncompleteTodos);
+  };
+
+  //戻す
+  const onClickReturn = (index) => {
+    const newcompletetask = [...completeTodos];
+    newcompletetask.splice(index, 1);
+
+    const newInCompletetask = [...incompleteTodos, completeTodos[index]];
+    setCompleteTodos(newcompletetask);
+    seiIncompleteTodos(newInCompletetask);
+  };
+
+  // const seiIncompleteTodos　＝　　（）
   return (
     <>
-      <h1 style={{ color: "red" }}>こんにちは</h1>
-      <ColorfulMessage color="blue">お元気ですか？</ColorfulMessage>
-      <ColorfulMessage color="pink">電気ですよ</ColorfulMessage>
-      {/* <ColorfulMessage color="pink" message="お元気です" /> */}
-      <p style={{ color: "red" }}>こんにちは</p>
-      <button onClick={onClickCountButton}>カウントアップ</button>
-      <p>{num}</p>
-      <button onClick={onClickfaceShowFlag}>on/off</button>
-      {faceShowFlag ? <p>( ^ω^ )</p> : <p>( )</p>}
+      <div className="input-area">
+        <input
+          placeholder="Todoを入力"
+          value={todoText}
+          onChange={onchageTodoText}
+        />
+        <button onClick={onClickAdd}>追加</button>
+      </div>
+      <div className="incomplete-area">
+        <p className="title">未完了のTodo</p>
+        <ul>
+          {incompleteTodos.map((todo, index) => {
+            return (
+              <div key={todo} className="list-row">
+                <li>{todo}</li>
+                <button onClick={() => onClickComplete(index)}>完了</button>
+                <button onClick={() => onClickDelete(index)}>削除</button>
+              </div>
+            );
+          })}
+        </ul>
+      </div>
+      <div className="complete-area">
+        <p className="title">完了のTodo</p>
+        <ul>
+          {completeTodos.map((completetask, index) => {
+            return (
+              <div key={completetask} className="list-row">
+                <li>{completetask}</li>
+                <button onClick={() => onClickReturn(index)}>戻す</button>
+              </div>
+            );
+          })}
+        </ul>
+      </div>
+      <div></div>
     </>
   );
-};
-
-export default App;
+}
